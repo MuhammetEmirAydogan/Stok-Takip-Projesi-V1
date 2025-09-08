@@ -1,0 +1,53 @@
+{% extends 'envanter/base.html' %}
+
+{% block content %}
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="card shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-0">{{ urun.urun_adi }}</h1>
+            <div>
+                <a href="{% url 'urun-duzenle' urun.pk %}" class="btn btn-warning btn-sm">Düzenle</a>
+                {% if perms.envanter.delete_urun %}
+                <a href="{% url 'urun-sil' urun.pk %}" class="btn btn-danger btn-sm">Sil</a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="card-body">
+            <p><strong>Mevcut Stok:</strong> {{ urun.mevcut_stok }}</p>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-lg-5 mb-4"><div class="card shadow-sm h-100"><div class="card-body"><h2 class="h4">Satış Yap</h2><form method="post">{% csrf_token %}{{ form.as_p }}<button type="submit" class="btn btn-success">Satışı Kaydet</button></form></div></div></div>
+        <div class="col-lg-7 mb-4"><div class="d-grid gap-2"><a href="{% url 'mal-alimi' urun.pk %}" class="btn btn-info text-white">Stoğa Ürün Ekle (Mal Alımı)</a><a href="{% url 'servis-cikisi' urun.pk %}" class="btn btn-secondary">Filodaki Araç İçin Servis Çıkışı Yap</a></div></div>
+    </div>
+    <div class="card shadow-sm mt-4">
+        <div class="card-header"><h2 class="h4 mb-0">İşlem Geçmişi</h2></div>
+        <div class="card-body">
+            <table class="table table-sm table-striped">
+                <thead class="table-light"><tr><th>Tarih</th><th>İşlem Tipi</th><th>Adet</th><th>Birim Fiyat</th><th>İlgili Taraf</th><th>Kullanıcı</th></tr></thead>
+                <tbody>
+                    {% for hareket in hareketler %}
+                    <tr>
+                        <td>{{ hareket.tarih|date:"d.m.Y H:i" }}</td>
+                        <td>{% if hareket.islem_tipi == 'Satış' or hareket.islem_tipi == 'Servis Kullanımı' %}<span class="badge bg-danger">{{ hareket.islem_tipi }}</span>{% else %}<span class="badge bg-success">{{ hareket.islem_tipi }}</span>{% endif %}</td>
+                        <td>{{ hareket.adet }}</td>
+                        <td>{% if hareket.islem_tipi == 'Satış' %}{{ hareket.birim_satis_fiyati }} ₺{% else %}{{ hareket.birim_alis_fiyati }} ₺{% endif %}</td>
+                        <td>{% if hareket.musteri %}{{ hareket.musteri }}{% elif hareket.tedarikci %}{{ hareket.tedarikci }}{% elif hareket.arac %}{{ hareket.arac.plaka }}{% else %}-{% endif %}</td>
+                        <td>{{ hareket.kullanici.username }}</td>
+                    </tr>
+                    {% empty %}<tr><td colspan="6" class="text-center">Bu ürün için henüz bir işlem geçmişi yok.</td></tr>{% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="mt-4"><a href="{% url 'urun-listesi' %}">‹ Ürün Listesine Geri Dön</a></div>
+{% endblock %}

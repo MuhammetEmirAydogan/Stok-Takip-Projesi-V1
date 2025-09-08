@@ -1,0 +1,33 @@
+{% extends 'envanter/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h1 class="h3 mb-0">Giriş Yap</h1>
+            </div>
+            <div class="card-body">
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        Kullanıcı adı veya parolanız yanlış. Lütfen tekrar deneyin.
+                    </div>
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="id_username" class="form-label">Kullanıcı Adı</label>
+                        <input type="text" name="username" class="form-control" id="id_username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_password" class="form-label">Parola</label>
+                        <input type="password" name="password" class="form-control" id="id_password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Giriş Yap</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

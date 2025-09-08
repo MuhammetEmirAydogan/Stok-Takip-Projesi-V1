@@ -1,0 +1,18 @@
+{% extends 'envanter/base.html' %}
+{% block content %}
+    <div class="card shadow-sm">
+        <div class="card-header"><h1 class="h3 mb-0">Excel'den Toplu Müşteri Aktar</h1></div>
+        <div class="card-body">
+            <div class="alert alert-info">
+                <p>Sütun başlıkları: `ad_soyad_veya_unvan`, `telefon`, `email`, `adres`, `vergi_no`</p>
+                <p>Sistem, `ad_soyad_veya_unvan`'a bakarak zaten var olan müşterileri atlayacaktır.</p>
+            </div>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary mt-3">Dosyayı Yükle ve Aktar</button>
+                <a href="{% url 'musteri-listesi' %}" class="btn btn-secondary mt-3">İptal</a>
+            </form>
+        </div>
+    </div>
+{% endblock %}

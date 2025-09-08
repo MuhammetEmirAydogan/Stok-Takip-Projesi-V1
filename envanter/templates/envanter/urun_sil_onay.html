@@ -1,0 +1,19 @@
+{% extends 'envanter/base.html' %}
+
+{% block content %}
+    <div class="card shadow-sm border-danger">
+        <div class="card-header bg-danger text-white">
+            <h1 class="h3 mb-0">Silme Onayı</h1>
+        </div>
+        <div class="card-body">
+            <p>Emin misiniz? Aşağıdaki ürünü kalıcı olarak sileceksiniz:</p>
+            <h4 class="text-center my-3">{{ urun.urun_adi }}</h4>
+            <p class="text-danger">Bu işlemin geri dönüşü yoktur!</p>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Evet, Sil</button>
+                <a href="{% url 'urun-detay' urun.pk %}" class="btn btn-secondary">İptal</a>
+            </form>
+        </div>
+    </div>
+{% endblock %}

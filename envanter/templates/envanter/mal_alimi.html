@@ -1,0 +1,31 @@
+{% extends 'envanter/base.html' %}
+
+{% block content %}
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h1 class="h3 mb-0">Mal Alımı</h1>
+        </div>
+        <div class="card-body">
+            <h2 class="h5">Ürün: {{ urun.urun_adi }}</h2>
+            <p class="text-muted">Mevcut Stok: {{ urun.mevcut_stok }}</p>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="{{ form.tedarikci.id_for_label }}" class="form-label">{{ form.tedarikci.label }}</label>
+                    {{ form.tedarikci }}
+                </div>
+                <div class="mb-3">
+                    <label for="{{ form.adet.id_for_label }}" class="form-label">{{ form.adet.label }}</label>
+                    {{ form.adet }}
+                </div>
+                <div class="mb-3">
+                    <label for="{{ form.birim_alis_fiyati.id_for_label }}" class="form-label">{{ form.birim_alis_fiyati.label }}</label>
+                    {{ form.birim_alis_fiyati }}
+                </div>
+                <button type="submit" class="btn btn-primary">Alımı Kaydet</button>
+                <a href="{% url 'urun-detay' urun.pk %}" class="btn btn-secondary">İptal</a>
+            </form>
+        </div>
+    </div>
+{% endblock %}

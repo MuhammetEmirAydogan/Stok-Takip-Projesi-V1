@@ -1,0 +1,55 @@
+{% extends 'envanter/base.html' %}
+
+{% block content %}
+    <h1 class="mb-4">Detaylı Hareket Raporu</h1>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header">Filtrele</div>
+        <div class="card-body">
+            <form method="get">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-4">{{ form.baslangic_tarihi.label_tag }}{{ form.baslangic_tarihi }}</div>
+                    <div class="col-md-4">{{ form.bitis_tarihi.label_tag }}{{ form.bitis_tarihi }}</div>
+                    <div class="col-md-3">{{ form.islem_tipi.label_tag }}{{ form.islem_tipi }}</div>
+                    <div class="col-md-1 d-grid"><button type="submit" class="btn btn-primary">Filtrele</button></div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card text-white bg-success"><div class="card-body">
+                <h5 class="card-title">Toplam Satış Tutarı (Filtrelenmiş)</h5>
+                <p class="card-text fs-2">{{ toplamlar.toplam_satis_tutari|default:"0.00" }} ₺</p>
+            </div></div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card text-white bg-danger"><div class="card-body">
+                <h5 class="card-title">Toplam Alım Maliyeti (Filtrelenmiş)</h5>
+                <p class="card-text fs-2">{{ toplamlar.toplam_alim_tutari|default:"0.00" }} ₺</p>
+            </div></div>
+        </div>
+    </div>
+
+    <table class="table table-striped table-hover shadow-sm">
+        <thead class="table-dark">
+            <tr><th>Tarih</th><th>Ürün</th><th>İşlem Tipi</th><th>Adet</th><th>Birim Fiyat</th><th>İlgili Taraf</th><th>Kullanıcı</th></tr>
+        </thead>
+        <tbody>
+            {% for hareket in hareketler %}
+            <tr>
+                <td>{{ hareket.tarih|date:"d.m.Y H:i" }}</td>
+                <td><a href="{% url 'urun-detay' hareket.urun.pk %}">{{ hareket.urun.urun_adi }}</a></td>
+                <td>{{ hareket.islem_tipi }}</td>
+                <td>{{ hareket.adet }}</td>
+                <td>{% if hareket.islem_tipi == 'Satış' %}{{ hareket.birim_satis_fiyati }}{% else %}{{ hareket.birim_alis_fiyati }}{% endif %} ₺</td>
+                <td>{% if hareket.musteri %}{{ hareket.musteri }}{% elif hareket.tedarikci %}{{ hareket.tedarikci }}{% elif hareket.arac %}{{ hareket.arac.plaka }}{% else %}-{% endif %}</td>
+                <td>{{ hareket.kullanici.username }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="7" class="text-center">Filtre kriterlerine uygun işlem bulunamadı.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

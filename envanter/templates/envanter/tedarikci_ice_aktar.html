@@ -1,0 +1,18 @@
+{% extends 'envanter/base.html' %}
+{% block content %}
+    <div class="card shadow-sm">
+        <div class="card-header"><h1 class="h3 mb-0">Excel'den Toplu Tedarikçi Aktar</h1></div>
+        <div class="card-body">
+            <div class="alert alert-info">
+                <p>Sütun başlıkları: `firma_adi`, `yetkili_kisi`, `telefon`, `email`, `adres`</p>
+                <p>Sistem, `firma_adi`'na bakarak zaten var olan tedarikçileri atlayacaktır.</p>
+            </div>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary mt-3">Dosyayı Yükle ve Aktar</button>
+                <a href="{% url 'tedarikci-listesi' %}" class="btn btn-secondary mt-3">İptal</a>
+            </form>
+        </div>
+    </div>
+{% endblock %}

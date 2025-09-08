@@ -1,0 +1,100 @@
+{% extends 'envanter/base.html' %}
+
+{% block content %}
+<h1 class="mb-4">Gösterge Paneli</h1>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card text-white bg-primary shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title">Toplam Ürün Çeşidi</h5>
+                <p class="card-text fs-2">{{ toplam_urun_cesidi }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card text-white bg-success shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title">Toplam Müşteri</h5>
+                <p class="card-text fs-2">{{ toplam_musteri }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card text-white bg-info shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title">Toplam Tedarikçi</h5>
+                <p class="card-text fs-2">{{ toplam_tedarikci }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-danger text-white">
+                Kritik Stoktaki Ürünler
+            </div>
+            <div class="list-group list-group-flush">
+                {% for urun in kritik_stoktaki_urunler %}
+                    <a href="{% url 'urun-detay' urun.pk %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        {{ urun.urun_adi }}
+                        <span class="badge bg-danger rounded-pill">{{ urun.mevcut_stok }} / {{ urun.kritik_stok_seviyesi }}</span>
+                    </a>
+                {% empty %}
+                    <div class="list-group-item">Kritik seviyede ürün bulunmuyor.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                Son İşlemler
+            </div>
+            <div class="list-group list-group-flush">
+                {% for hareket in son_hareketler %}
+                    <a href="{% url 'urun-detay' hareket.urun.pk %}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ hareket.urun.urun_adi }}</h6>
+                            <small>{{ hareket.tarih|date:"d.m.Y" }}</small>
+                        </div>
+                        <p class="mb-1">
+                            {% if hareket.islem_tipi == 'Satış' or hareket.islem_tipi == 'Servis Kullanımı (Filo)' %}
+                                <span class="badge bg-danger">{{ hareket.islem_tipi }}</span>
+                            {% else %}
+                                <span class="badge bg-success">{{ hareket.islem_tipi }}</span>
+                            {% endif %}
+                            {{ hareket.adet }} adet
+                        </p>
+                    </a>
+                {% empty %}
+                     <div class="list-group-item">Henüz bir işlem yapılmadı.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white">
+                Şu An Kirada Olan Araçlar
+            </div>
+            <div class="list-group list-group-flush">
+                {% for kiralama in aktif_kiralamalar %}
+                    <div class="list-group-item">
+                        <strong>{{ kiralama.arac.plaka }}</strong> ({{ kiralama.arac.marka }} {{ kiralama.arac.model }})
+                        <br>
+                        <small>Müşteri: {{ kiralama.musteri }} | Bitiş Tarihi: {{ kiralama.bitis_tarihi|date:"d F Y" }}</small>
+                    </div>
+                {% empty %}
+                    <div class="list-group-item">Şu an kirada olan araç bulunmuyor.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
